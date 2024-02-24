@@ -1,0 +1,122 @@
+==$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+{
+"timer":[{
+"idx":0,
+"id":"2c191681-03ef-4837-b9ed-d7645d1118aa",
+"session_id":"session_id_disabled",
+"mpi_rank":0,
+"stopped":true,
+"kind":"GPU",
+"start_time":931190671120576,
+"end_time":931190671377288,
+"elapsed_time":256712,
+"start_line":14,
+"end_line":55,
+"start_function":"main",
+"end_function":"main",
+"start_file":"template.cu",
+"end_file":"template.cu",
+"parent_id":-1,
+"message":"Getting GPU Data."
+}],
+"logger":[{
+"id":"d625b66c-168c-40b9-887f-24de14cfb434",
+"session_id":"session_id_disabled",
+"mpi_rank":0,
+"level":"Trace",
+"message":"There is 1 device supporting CUDA",
+"file":"template.cu",
+"function":"main",
+"line":30,
+"time":931190671261651
+},
+{
+"id":"e5c28886-f61f-4d5b-96cf-69208ddc2052",
+"session_id":"session_id_disabled",
+"mpi_rank":0,
+"level":"Trace",
+"message":"Device 0 name: NVIDIA A100-PCIE-40GB",
+"file":"template.cu",
+"function":"main",
+"line":37,
+"time":931190671278262
+},
+{
+"id":"eb7189d4-10cd-4245-ad5f-e0150e6be669",
+"session_id":"session_id_disabled",
+"mpi_rank":0,
+"level":"Trace",
+"message":" Computational Capabilities: 8.0",
+"file":"template.cu",
+"function":"main",
+"line":39,
+"time":931190671292719
+},
+{
+"id":"6746b83e-c6be-4423-b7a7-abdb4f27c5e4",
+"session_id":"session_id_disabled",
+"mpi_rank":0,
+"level":"Trace",
+"message":" Maximum global memory size: 42481811456",
+"file":"template.cu",
+"function":"main",
+"line":41,
+"time":931190671306615
+},
+{
+"id":"0fc7695a-e1a2-4ae1-8e88-47ace53ec9a0",
+"session_id":"session_id_disabled",
+"mpi_rank":0,
+"level":"Trace",
+"message":" Maximum constant memory size: 65536",
+"file":"template.cu",
+"function":"main",
+"line":43,
+"time":931190671319930
+},
+{
+"id":"7152049f-b868-4172-9088-2f85a6e4b326",
+"session_id":"session_id_disabled",
+"mpi_rank":0,
+"level":"Trace",
+"message":" Maximum shared memory size per block: 49152",
+"file":"template.cu",
+"function":"main",
+"line":45,
+"time":931190671332764
+},
+{
+"id":"c94e5d04-a35d-4e1a-84c4-f0a5cd56fbd1",
+"session_id":"session_id_disabled",
+"mpi_rank":0,
+"level":"Trace",
+"message":" Maximum block dimensions: 1024 x 1024 x 64",
+"file":"template.cu",
+"function":"main",
+"line":48,
+"time":931190671348023
+},
+{
+"id":"c4fe6c82-59d5-4349-9664-5b4f825dc77e",
+"session_id":"session_id_disabled",
+"mpi_rank":0,
+"level":"Trace",
+"message":" Maximum grid dimensions: 2147483647 x 65535 x 65535",
+"file":"template.cu",
+"function":"main",
+"line":51,
+"time":931190671363041
+},
+{
+"id":"421481bf-60cc-4f13-bc8c-13a2adcb543d",
+"session_id":"session_id_disabled",
+"mpi_rank":0,
+"level":"Trace",
+"message":" Warp size: 32",
+"file":"template.cu",
+"function":"main",
+"line":52,
+"time":931190671375845
+}],
+"solution_exists": false
+}
