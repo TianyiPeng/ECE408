@@ -31,11 +31,12 @@ int main(int argc, char **argv) {
 
   wbLog(TRACE, "The input length is ", inputLength);
 
-  wbTime_start(GPU, "Allocating GPU memory.");
-  //@@ Allocate GPU memory here
   float *A_d, *B_d, *C_d;
   int size = inputLength * sizeof(float);
-  
+
+  wbTime_start(GPU, "Allocating GPU memory.");
+  //@@ Allocate GPU memory here
+ 
   cudaMalloc((void **) &A_d, size);
   cudaMalloc((void **) &B_d, size);
   cudaMalloc((void **) &C_d, size);
