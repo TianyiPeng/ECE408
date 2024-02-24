@@ -3,6 +3,10 @@
 
 __global__ void vecAdd(float *in1, float *in2, float *out, int len) {
   //@@ Insert code to implement vector addition here
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i < len) {
+    out[i] = in1[i] + in2[i];
+  }
 }
 
 int main(int argc, char **argv) {
@@ -29,10 +33,18 @@ int main(int argc, char **argv) {
 
   wbTime_start(GPU, "Allocating GPU memory.");
   //@@ Allocate GPU memory here
+  float *A_d, *B_d, *C_d;
+  int size = inputLength * sizeof(float);
+
+  cudaMalloc((void **) &A_d, size);
+  cudaMalloc((void **) &B_d, size);
 
   wbTime_stop(GPU, "Allocating GPU memory.");
 
   wbTime_start(GPU, "Copying input memory to the GPU.");
+  cudaMemcpy(A_d, hostInput1, size, cudaMemcpyHostToDevice);
+  cudaMemcpy(B_d, hostInput2, size, cudaMemcpyHostToDevice);
+
   //@@ Copy memory to the GPU here
 
   wbTime_stop(GPU, "Copying input memory to the GPU.");
@@ -42,16 +54,22 @@ int main(int argc, char **argv) {
   wbTime_start(Compute, "Performing CUDA computation");
   //@@ Launch the GPU Kernel here
 
+  vecAdd<<<(inputLength+255)/256, 256>>>(A_d, B_d, C_d, inputLength);
+
   cudaDeviceSynchronize();
   wbTime_stop(Compute, "Performing CUDA computation");
 
   wbTime_start(Copy, "Copying output memory to the CPU");
   //@@ Copy the GPU memory back to the CPU here
+  cudaMemcpy(hostOutput, C_d, size, cudaMemcpyDeviceToHost);
 
   wbTime_stop(Copy, "Copying output memory to the CPU");
 
   wbTime_start(GPU, "Freeing GPU Memory");
   //@@ Free the GPU memory here
+  cudaFree(A_d);
+  cudaFree(B_d);
+  cudaFree(C_d);
 
   wbTime_stop(GPU, "Freeing GPU Memory");
 
