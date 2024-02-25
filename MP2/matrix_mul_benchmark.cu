@@ -1,0 +1,98 @@
+#include <sys/time.h>
+#include <stdio.h>
+#include <stdint.h>
+
+
+// Compute C = A * B
+__global__ void matrixMultiply(float *A, float *B, float *C, int numARows,
+                               int numAColumns, int numBRows,
+                               int numBColumns, int numCRows,
+                               int numCColumns) {
+  //@@ Insert code to implement matrix multiplication here
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  int j = blockIdx.y * blockDim.y + threadIdx.y;
+  if (i < numARows && j < numBColumns) {
+    float sum = 0;
+    for (int k = 0; k < numAColumns; k++) {
+      sum += A[i * numAColumns + k] * B[k * numBColumns + j];
+    }
+    C[i * numCColumns + j] = sum;
+  }
+}
+
+int main(int argc, char **argv) {
+  float *hostA; // The A matrix
+  float *hostB; // The B matrix
+  float *hostC; // The output C matrix
+  float *deviceA;
+  float *deviceB;
+  float *deviceC;
+  int numARows = 8192;    // number of rows in the matrix A
+  int numAColumns = 8192; // number of columns in the matrix A
+  int numBRows = 8192;    // number of rows in the matrix B
+  int numBColumns = 8192; // number of columns in the matrix B
+  //int numBColumns = 28672 / 8; // number of columns in the matrix B
+  int numCRows;    // number of rows in the matrix C (you have to set this)
+  int numCColumns; // number of columns in the matrix C (you have to set
+                   // this)
+
+  numCRows = numARows;
+  numCColumns = numBColumns;
+  
+  hostA = (float *)malloc(numARows * numAColumns * sizeof(float));
+  hostB = (float *)malloc(numBRows * numBColumns * sizeof(float));
+
+  cudaMalloc(&deviceA, numARows * numAColumns * sizeof(float));
+  cudaMalloc(&deviceB, numBRows * numBColumns * sizeof(float));
+  cudaMalloc(&deviceC, numCRows * numCColumns * sizeof(float));
+
+  cudaMemcpyHostToDevice(deviceA, hostA, numARows * numAColumns * sizeof(float));
+  cudaMemcpyHostToDevice(deviceB, hostB, numBRows * numBColumns * sizeof(float));
+
+  struct timeval start, end;
+  float kernel_time;
+
+  gettimeofday(&start, NULL);
+
+  matrixMultiply<<<ceil(numBColumns/256),256>>>(deviceA, deviceB, deviceC, numARows, numAColumns, numBRows, numBColumns, numCRows, numCColumns);
+  cudaDeviceSynchronize();
+
+  gettimeofday(&end, NULL);
+
+  kernel_time = end.tv_sec - start.tv_sec
+      + (float) (end.tv_usec - start.tv_usec) / 1e6;
+
+  print('dimension of A = %d x %d\n', numARows, numAColumns);
+  print('dimension of B = %d x %d\n', numBRows, numBColumns);
+  printf("time = %.2f\n for matrix multiplication", kernel_time);
+
+  bandwidth = (numARows * numAColumns + numBRows * numBColumns + numCRows * numCColumns) * sizeof(float) / kernel_time / 1e9;
+
+  print('bandwidth = %.2f\n', bandwidth);
+
+  // check correctness
+  hostC = (float *)malloc(numCRows * numCColumns * sizeof(float));
+  for (int i = 0; i < numCRows * numCColumns; i++) {
+    hostC[i] = 0;
+  }
+  for (int i = 0; i < numARows; i++) {
+    for (int j = 0; j < numBColumns; j++) {
+      for (int k = 0; k < numAColumns; k++) {
+        hostC[i * numCColumns + j] += hostA[i * numAColumns + k] * hostB[k * numBColumns + j];
+      }
+    }
+  }
+
+  float *hostC2 = (float *)malloc(numCRows * numCColumns * sizeof(float));
+
+  cudaMemcpyDeviceToHost(hostC2, deviceC, numCRows * numCColumns * sizeof(float));
+
+  for (int i = 0; i < numCRows * numCColumns; i++) {
+    if (hostC[i] != hostC2[i]) {
+      printf("Error: %f != %f\n", hostC[i], hostC2[i]);
+      return -1;
+    }
+  }
+
+  return 0;
+}
