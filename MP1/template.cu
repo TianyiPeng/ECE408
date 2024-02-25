@@ -108,10 +108,6 @@ int main(int argc, char **argv) {
 
   //wbSolution(args, hostOutput, inputLength);
 
-  free(hostInput1);
-  free(hostInput2);
-  free(hostOutput);
-
   // check whether the result is correct
   for(int i = 0; i < inputLength; i++) {
     if (hostOutput[i] != hostInput1[i] + hostInput2[i]) {
@@ -120,6 +116,11 @@ int main(int argc, char **argv) {
     }
   }
   printf("All results are correct!\n");
+
+  
+  free(hostInput1);
+  free(hostInput2);
+  free(hostOutput);
 
   return 0;
 }
