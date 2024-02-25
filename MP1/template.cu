@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
   }
 
   // The first positional argument is at argv[1]
-  int inputLength = atoi(argv[1]); // Convert the string argument to an integer
+  inputLength = atoi(argv[1]); // Convert the string argument to an integer
 
   printf("Input Length: %d\n", inputLength);
 
