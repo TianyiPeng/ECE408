@@ -34,16 +34,16 @@ int main(int argc, char **argv) {
 }
 
   // Convert command-line arguments from strings to integers
-  int n = atoi(argv[1]);
+  int64_t n = atoi(argv[1]);
   int block_size = atoi(argv[2]);
 
-  int numARows = n;    // number of rows in the matrix A
-  int numAColumns = n; // number of columns in the matrix A
-  int numBRows = n;    // number of rows in the matrix B
-  int numBColumns = n; // number of columns in the matrix B
+  int64_t numARows = n;    // number of rows in the matrix A
+  int64_t numAColumns = n; // number of columns in the matrix A
+  int64_t numBRows = n;    // number of rows in the matrix B
+  int64_t numBColumns = n; // number of columns in the matrix B
   //int numBColumns = 28672 / 8; // number of columns in the matrix B
-  int numCRows;    // number of rows in the matrix C (you have to set this)
-  int numCColumns; // number of columns in the matrix C (you have to set
+  int64_t numCRows;    // number of rows in the matrix C (you have to set this)
+  int64_t numCColumns; // number of columns in the matrix C (you have to set
                    // this)
 
   numCRows = numARows;
@@ -72,11 +72,11 @@ int main(int argc, char **argv) {
   kernel_time = end.tv_sec - start.tv_sec
       + (float) (end.tv_usec - start.tv_usec) / 1e6;
 
-  printf("dimension of A = %d x %d\n", numARows, numAColumns);
-  printf("dimension of B = %d x %d\n", numBRows, numBColumns);
+  printf("dimension of A = %lld x %lld\n", numARows, numAColumns);
+  printf("dimension of B = %lld x %lld\n", numBRows, numBColumns);
   printf("time = %.2f for matrix multiplication\n", kernel_time);
 
-  double bandwidth = (numARows * numAColumns + numBRows * numBColumns + numCRows * numCColumns) * sizeof(float) / kernel_time / 1e9;
+  double bandwidth = ((double)numARows * numAColumns + (double)numBRows * numBColumns + (double)numCRows * numCColumns) * sizeof(float) / kernel_time / 1e9;
 
   printf("bandwidth = %.2lf\n", bandwidth);
 
@@ -85,17 +85,22 @@ int main(int argc, char **argv) {
   for (int i = 0; i < numCRows * numCColumns; i++) {
     hostC[i] = 0;
   }
-  // for (int i = 0; i < numARows; i++) {
-  //   for (int j = 0; j < numBColumns; j++) {
-  //     for (int k = 0; k < numAColumns; k++) {
-  //       hostC[i * numCColumns + j] += hostA[i * numAColumns + k] * hostB[k * numBColumns + j];
-  //     }
-  //   }
-  // }
+  int i = 0
+  int j = 0
+
+  for (int k = 0; k < numAColumns; k++) {
+         hostC[i * numCColumns + j] += hostA[i * numAColumns + k] * hostB[k * numBColumns + j];
+       }
 
   float *hostC2 = (float *)malloc(numCRows * numCColumns * sizeof(float));
 
   cudaMemcpy(hostC2, deviceC, numCRows * numCColumns * sizeof(float), cudaMemcpyDeviceToHost);
+
+  // check the result
+  if (hostC[i * numCColumns + j] != hostC2[i * numCColumns + j]) {
+    printf("Error: %f != %f\n", hostC[i * numCColumns + j], hostC2[i * numCColumns + j]);
+    return -1;
+  }
 
   // for (int i = 0; i < numCRows * numCColumns; i++) {
   //   if (hostC[i] != hostC2[i]) {
