@@ -1,7 +1,7 @@
 #include <sys/time.h>
 #include <stdio.h>
 #include <stdint.h>
-
+#include <stdlib.h> // For malloc and rand
 
 // Compute C = A * B
 __global__ void matrixMultiply(float *A, float *B, float *C, int numARows,
@@ -46,8 +46,8 @@ int main(int argc, char **argv) {
   cudaMalloc(&deviceB, numBRows * numBColumns * sizeof(float));
   cudaMalloc(&deviceC, numCRows * numCColumns * sizeof(float));
 
-  cudaMemcpyHostToDevice(deviceA, hostA, numARows * numAColumns * sizeof(float));
-  cudaMemcpyHostToDevice(deviceB, hostB, numBRows * numBColumns * sizeof(float));
+  cudaMemcpy(deviceA, hostA, numARows * numAColumns * sizeof(float), cudaMemcpyHostToDevice);
+  cudaMemcpy(deviceB, hostB, numBRows * numBColumns * sizeof(float), cudaMemcpyHostToDevice);
 
   struct timeval start, end;
   float kernel_time;
@@ -62,13 +62,13 @@ int main(int argc, char **argv) {
   kernel_time = end.tv_sec - start.tv_sec
       + (float) (end.tv_usec - start.tv_usec) / 1e6;
 
-  print('dimension of A = %d x %d\n', numARows, numAColumns);
-  print('dimension of B = %d x %d\n', numBRows, numBColumns);
+  printf('dimension of A = %d x %d\n', numARows, numAColumns);
+  printf('dimension of B = %d x %d\n', numBRows, numBColumns);
   printf("time = %.2f\n for matrix multiplication", kernel_time);
 
-  bandwidth = (numARows * numAColumns + numBRows * numBColumns + numCRows * numCColumns) * sizeof(float) / kernel_time / 1e9;
+  double bandwidth = (numARows * numAColumns + numBRows * numBColumns + numCRows * numCColumns) * sizeof(float) / kernel_time / 1e9;
 
-  print('bandwidth = %.2f\n', bandwidth);
+  printf('bandwidth = %.2lf\n', bandwidth);
 
   // check correctness
   hostC = (float *)malloc(numCRows * numCColumns * sizeof(float));
@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
 
   float *hostC2 = (float *)malloc(numCRows * numCColumns * sizeof(float));
 
-  cudaMemcpyDeviceToHost(hostC2, deviceC, numCRows * numCColumns * sizeof(float));
+  cudaMemcpy(hostC2, deviceC, numCRows * numCColumns * sizeof(float), cudaMemcpyDeviceToHost);
 
   for (int i = 0; i < numCRows * numCColumns; i++) {
     if (hostC[i] != hostC2[i]) {
