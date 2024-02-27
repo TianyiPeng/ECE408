@@ -27,10 +27,11 @@ int main(int argc, char **argv) {
   float *deviceA;
   float *deviceB;
   float *deviceC;
-  int numARows = 8192;    // number of rows in the matrix A
-  int numAColumns = 8192; // number of columns in the matrix A
-  int numBRows = 8192;    // number of rows in the matrix B
-  int numBColumns = 8192; // number of columns in the matrix B
+  int n = 256;
+  int numARows = n;    // number of rows in the matrix A
+  int numAColumns = n; // number of columns in the matrix A
+  int numBRows = n;    // number of rows in the matrix B
+  int numBColumns = n; // number of columns in the matrix B
   //int numBColumns = 28672 / 8; // number of columns in the matrix B
   int numCRows;    // number of rows in the matrix C (you have to set this)
   int numCColumns; // number of columns in the matrix C (you have to set
@@ -64,7 +65,7 @@ int main(int argc, char **argv) {
 
   printf("dimension of A = %d x %d\n", numARows, numAColumns);
   printf("dimension of B = %d x %d\n", numBRows, numBColumns);
-  printf("time = %.2f\n for matrix multiplication", kernel_time);
+  printf("time = %.2f for matrix multiplication\n", kernel_time);
 
   double bandwidth = (numARows * numAColumns + numBRows * numBColumns + numCRows * numCColumns) * sizeof(float) / kernel_time / 1e9;
 
