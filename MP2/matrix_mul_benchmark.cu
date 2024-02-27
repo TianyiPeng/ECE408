@@ -82,8 +82,8 @@ int main(int argc, char **argv) {
 
   // check correctness
   hostC = (float *)malloc(numCRows * numCColumns * sizeof(float));
-  int i = 0;
-  int j = 0;
+  int i = 11;
+  int j = n-1;
   hostC[i * numCColumns + j] = 0;
 
   for (int k = 0; k < numAColumns; k++) {
