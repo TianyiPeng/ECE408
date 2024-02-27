@@ -89,6 +89,7 @@ int main(int argc, char **argv) {
   for (int k = 0; k < numAColumns; k++) {
          hostC[i * numCColumns + j] += hostA[i * numAColumns + k] * hostB[k * numBColumns + j];
        }
+  printf("hostC[%d][%d] = %f\n", i, j, hostC[i * numCColumns + j]);
 
   float *hostC2 = (float *)malloc(numCRows * numCColumns * sizeof(float));
 
