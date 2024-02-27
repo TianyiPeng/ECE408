@@ -52,6 +52,14 @@ int main(int argc, char **argv) {
   hostA = (float *)malloc(numARows * numAColumns * sizeof(float));
   hostB = (float *)malloc(numBRows * numBColumns * sizeof(float));
 
+  // Initialize the A and B matrices
+  for (int i = 0; i < numARows * numAColumns; i+=10) {
+    hostA[i] = (float)rand() / RAND_MAX;
+  }
+  for (int i = 0; i < numBRows * numBColumns; i+=10) {
+    hostB[i] = (float)rand() / RAND_MAX;
+  }
+
   cudaMalloc(&deviceA, numARows * numAColumns * sizeof(float));
   cudaMalloc(&deviceB, numBRows * numBColumns * sizeof(float));
   cudaMalloc(&deviceC, numCRows * numCColumns * sizeof(float));
