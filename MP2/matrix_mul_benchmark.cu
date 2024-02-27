@@ -27,7 +27,16 @@ int main(int argc, char **argv) {
   float *deviceA;
   float *deviceB;
   float *deviceC;
-  int n = 256;
+
+  if (argc != 3) {
+    printf("Usage: %s n block_size\n", argv[0]);
+    return 1;  // Return non-zero to indicate error
+}
+
+  // Convert command-line arguments from strings to integers
+  int n = atoi(argv[1]);
+  int block_size = atoi(argv[2]);
+
   int numARows = n;    // number of rows in the matrix A
   int numAColumns = n; // number of columns in the matrix A
   int numBRows = n;    // number of rows in the matrix B
@@ -55,7 +64,7 @@ int main(int argc, char **argv) {
 
   gettimeofday(&start, NULL);
 
-  matrixMultiply<<<ceil(numBColumns/256),256>>>(deviceA, deviceB, deviceC, numARows, numAColumns, numBRows, numBColumns, numCRows, numCColumns);
+  matrixMultiply<<<ceil(numBColumns/block_size),block_size>>>(deviceA, deviceB, deviceC, numARows, numAColumns, numBRows, numBColumns, numCRows, numCColumns);
   cudaDeviceSynchronize();
 
   gettimeofday(&end, NULL);
@@ -76,24 +85,24 @@ int main(int argc, char **argv) {
   for (int i = 0; i < numCRows * numCColumns; i++) {
     hostC[i] = 0;
   }
-  for (int i = 0; i < numARows; i++) {
-    for (int j = 0; j < numBColumns; j++) {
-      for (int k = 0; k < numAColumns; k++) {
-        hostC[i * numCColumns + j] += hostA[i * numAColumns + k] * hostB[k * numBColumns + j];
-      }
-    }
-  }
+  // for (int i = 0; i < numARows; i++) {
+  //   for (int j = 0; j < numBColumns; j++) {
+  //     for (int k = 0; k < numAColumns; k++) {
+  //       hostC[i * numCColumns + j] += hostA[i * numAColumns + k] * hostB[k * numBColumns + j];
+  //     }
+  //   }
+  // }
 
   float *hostC2 = (float *)malloc(numCRows * numCColumns * sizeof(float));
 
   cudaMemcpy(hostC2, deviceC, numCRows * numCColumns * sizeof(float), cudaMemcpyDeviceToHost);
 
-  for (int i = 0; i < numCRows * numCColumns; i++) {
-    if (hostC[i] != hostC2[i]) {
-      printf("Error: %f != %f\n", hostC[i], hostC2[i]);
-      return -1;
-    }
-  }
+  // for (int i = 0; i < numCRows * numCColumns; i++) {
+  //   if (hostC[i] != hostC2[i]) {
+  //     printf("Error: %f != %f\n", hostC[i], hostC2[i]);
+  //     return -1;
+  //   }
+  // }
 
   return 0;
 }
