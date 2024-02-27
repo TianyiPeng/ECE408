@@ -62,13 +62,13 @@ int main(int argc, char **argv) {
   kernel_time = end.tv_sec - start.tv_sec
       + (float) (end.tv_usec - start.tv_usec) / 1e6;
 
-  printf('dimension of A = %d x %d\n', numARows, numAColumns);
-  printf('dimension of B = %d x %d\n', numBRows, numBColumns);
+  printf("dimension of A = %d x %d\n", numARows, numAColumns);
+  printf("dimension of B = %d x %d\n", numBRows, numBColumns);
   printf("time = %.2f\n for matrix multiplication", kernel_time);
 
   double bandwidth = (numARows * numAColumns + numBRows * numBColumns + numCRows * numCColumns) * sizeof(float) / kernel_time / 1e9;
 
-  printf('bandwidth = %.2lf\n', bandwidth);
+  printf("bandwidth = %.2lf\n", bandwidth);
 
   // check correctness
   hostC = (float *)malloc(numCRows * numCColumns * sizeof(float));
