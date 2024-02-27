@@ -74,6 +74,9 @@ int main(int argc, char **argv) {
 
   gettimeofday(&start, NULL);
 
+  dim3 gridSize(ceil((float)numARows / block_size), ceil((float)numBColumns / block_size), 1);
+  dim3 blockSize(block_size, block_size, 1);
+
   matrixMultiply<<<ceil(numBColumns/block_size),block_size>>>(deviceA, deviceB, deviceC, numARows, numAColumns, numBRows, numBColumns, numCRows, numCColumns);
   cudaDeviceSynchronize();
 
