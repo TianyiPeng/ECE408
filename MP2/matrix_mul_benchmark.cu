@@ -53,11 +53,13 @@ int main(int argc, char **argv) {
   hostB = (float *)malloc(numBRows * numBColumns * sizeof(float));
 
   // Initialize the A and B matrices
-  for (int i = 0; i < numARows * numAColumns; i+=10) {
-    hostA[i] = (float)rand() / RAND_MAX;
+  int i1 = 11;
+  int j1 = n-1;
+  for (int k = 0; k < numAColumns; k++) {
+    hostA[i1 * numAColumns + k] = (float)rand() / RAND_MAX;
   }
-  for (int i = 0; i < numBRows * numBColumns; i+=10) {
-    hostB[i] = (float)rand() / RAND_MAX;
+  for (int k = 0; k < numBRows; k++) {
+    hostB[k * numBColumns + j1] = (float)rand() / RAND_MAX;
   }
 
   cudaMalloc(&deviceA, numARows * numAColumns * sizeof(float));
@@ -90,22 +92,21 @@ int main(int argc, char **argv) {
 
   // check correctness
   hostC = (float *)malloc(numCRows * numCColumns * sizeof(float));
-  int i = 11;
-  int j = n-1;
-  hostC[i * numCColumns + j] = 0;
+  
+  hostC[i1 * numCColumns + j1] = 0;
 
   for (int k = 0; k < numAColumns; k++) {
-         hostC[i * numCColumns + j] += hostA[i * numAColumns + k] * hostB[k * numBColumns + j];
+         hostC[i1 * numCColumns + j1] += hostA[i1 * numAColumns + k] * hostB[k * numBColumns + j1];
        }
-  printf("hostC[%d][%d] = %f\n", i, j, hostC[i * numCColumns + j]);
+  printf("hostC[%d][%d] = %f\n", i1, j1, hostC[i1 * numCColumns + j1]);
 
   float *hostC2 = (float *)malloc(numCRows * numCColumns * sizeof(float));
 
   cudaMemcpy(hostC2, deviceC, numCRows * numCColumns * sizeof(float), cudaMemcpyDeviceToHost);
 
   // check the result
-  if (hostC[i * numCColumns + j] != hostC2[i * numCColumns + j]) {
-    printf("Error: %f != %f\n", hostC[i * numCColumns + j], hostC2[i * numCColumns + j]);
+  if (hostC[i1 * numCColumns + j1] != hostC2[i1 * numCColumns + j1]) {
+    printf("Error: %f != %f\n", hostC[i1 * numCColumns + j1], hostC2[i1 * numCColumns + j1]);
     return -1;
   }
 
