@@ -93,6 +93,8 @@ int main(int argc, char **argv) {
 
   printf("bandwidth = %.2lf\n", bandwidth);
 
+  printf("tflops = %.2lf\n", (2.0 * numARows * numAColumns * numBColumns) / kernel_time / 1e12);
+
   // check correctness
   hostC = (float *)malloc(numCRows * numCColumns * sizeof(float));
   
