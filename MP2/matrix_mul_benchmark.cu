@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
 
   printf("dimension of A = %lld x %lld\n", numARows, numAColumns);
   printf("dimension of B = %lld x %lld\n", numBRows, numBColumns);
-  printf("time = %.2f for matrix multiplication\n", kernel_time);
+  printf("time = %.5f for matrix multiplication\n", kernel_time);
 
   double bandwidth = ((double)numARows * numAColumns + (double)numBRows * numBColumns + (double)numCRows * numCColumns) * sizeof(float) / kernel_time / 1e9;
 
