@@ -11,7 +11,8 @@ __global__ void scalamul(int n, int *s)
     int idx = threadIdx.x + blockIdx.x * BLK;
     
     if (idx < n)
-       s[idx] = s[idx] + 1;
+	//s[idx] = 1;
+        s[idx] = s[idx] + 1;
     // for () {
     // }
 }
@@ -37,8 +38,8 @@ int main()
     kernel_time = end.tv_sec - start.tv_sec
         + (float) (end.tv_usec - start.tv_usec) / 1e6;
 
-    printf("time = %.2f\n", kernel_time);
-    printf("bandwidth = %.2f\n", n * sizeof(int) * tt / kernel_time / 1e9);
+    printf("time = %.5f\n", kernel_time);
+    printf("bandwidth = %.5f\n", n * sizeof(int) * tt / kernel_time / 1e9);
 
 
     return 0;
