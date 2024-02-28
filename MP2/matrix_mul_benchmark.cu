@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
   float *deviceB;
   float *deviceC;
 
-  if (argc != 5) {
+  if (argc != 6) {
     printf("Usage: %s n block_size\n", argv[0]);
     return 1;  // Return non-zero to indicate error
 }
@@ -37,7 +37,8 @@ int main(int argc, char **argv) {
   int64_t n = atoi(argv[1]);
   int64_t m = atoi(argv[2]);
   int64_t p = atoi(argv[3]);
-  int block_size = atoi(argv[4]);
+  int block_size_x = atoi(argv[4]);
+  int block_size_y = atoi(argv[5]);
 
   int64_t numARows = n;    // number of rows in the matrix A
   int64_t numAColumns = m; // number of columns in the matrix A
@@ -76,8 +77,8 @@ int main(int argc, char **argv) {
 
   gettimeofday(&start, NULL);
 
-  dim3 gridSize(ceil((float)numARows / block_size), ceil((float)numBColumns / block_size), 1);
-  dim3 blockSize(block_size, block_size, 1);
+  dim3 gridSize(ceil((float)numARows / block_size_x), ceil((float)numBColumns / block_size_y), 1);
+  dim3 blockSize(block_size_x, block_size_y, 1);
 
   matrixMultiply<<<gridSize, blockSize>>>(deviceA, deviceB, deviceC, numARows, numAColumns, numBRows, numBColumns, numCRows, numCColumns);
   cudaDeviceSynchronize();
@@ -93,9 +94,9 @@ int main(int argc, char **argv) {
 
   double bandwidth = ((double)numARows * numAColumns + (double)numBRows * numBColumns + (double)numCRows * numCColumns) * sizeof(float) / kernel_time / 1e9;
 
-  printf("bandwidth = %.2lf\n", bandwidth);
+  printf("bandwidth = %.5lf\n", bandwidth);
 
-  printf("tflops = %.2lf\n", (2.0 * numARows * numAColumns * numBColumns) / kernel_time / 1e12);
+  printf("tflops = %.5lf\n", (2.0 * numARows * numAColumns * numBColumns) / kernel_time / 1e12);
 
   // check correctness
   hostC = (float *)malloc(numCRows * numCColumns * sizeof(float));
