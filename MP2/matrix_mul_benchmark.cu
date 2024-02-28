@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
   hostB = (float *)malloc(numBRows * numBColumns * sizeof(float));
 
   // Initialize the A and B matrices
-  int i1 = 11;
+  int i1 = n-1;
   int j1 = p-1;
   for (int k = 0; k < numAColumns; k++) {
     hostA[i1 * numAColumns + k] = (float)rand() / RAND_MAX;
