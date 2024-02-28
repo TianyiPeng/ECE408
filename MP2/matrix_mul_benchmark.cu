@@ -28,19 +28,21 @@ int main(int argc, char **argv) {
   float *deviceB;
   float *deviceC;
 
-  if (argc != 3) {
+  if (argc != 5) {
     printf("Usage: %s n block_size\n", argv[0]);
     return 1;  // Return non-zero to indicate error
 }
 
   // Convert command-line arguments from strings to integers
   int64_t n = atoi(argv[1]);
-  int block_size = atoi(argv[2]);
+  int64_t m = atoi(argv[2]);
+  int64_t p = atoi(argv[3]);
+  int block_size = atoi(argv[4]);
 
   int64_t numARows = n;    // number of rows in the matrix A
-  int64_t numAColumns = n; // number of columns in the matrix A
-  int64_t numBRows = n;    // number of rows in the matrix B
-  int64_t numBColumns = n; // number of columns in the matrix B
+  int64_t numAColumns = m; // number of columns in the matrix A
+  int64_t numBRows = m;    // number of rows in the matrix B
+  int64_t numBColumns = p; // number of columns in the matrix B
   //int numBColumns = 28672 / 8; // number of columns in the matrix B
   int64_t numCRows;    // number of rows in the matrix C (you have to set this)
   int64_t numCColumns; // number of columns in the matrix C (you have to set
@@ -54,7 +56,7 @@ int main(int argc, char **argv) {
 
   // Initialize the A and B matrices
   int i1 = 11;
-  int j1 = n-1;
+  int j1 = p-1;
   for (int k = 0; k < numAColumns; k++) {
     hostA[i1 * numAColumns + k] = (float)rand() / RAND_MAX;
   }
