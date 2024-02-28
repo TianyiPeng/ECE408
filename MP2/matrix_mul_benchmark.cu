@@ -4,10 +4,10 @@
 #include <stdlib.h> // For malloc and rand
 
 // Compute C = A * B
-__global__ void matrixMultiply(float *A, float *B, float *C, int numARows,
-                               int numAColumns, int numBRows,
-                               int numBColumns, int numCRows,
-                               int numCColumns) {
+__global__ void matrixMultiply(float *A, float *B, float *C, int64_t numARows,
+                               int64_t numAColumns, int64_t numBRows,
+                               int64_t numBColumns, int64_t numCRows,
+                               int64_t numCColumns) {
   //@@ Insert code to implement matrix multiplication here
   int i = blockIdx.x * blockDim.x + threadIdx.x;
   int j = blockIdx.y * blockDim.y + threadIdx.y;
